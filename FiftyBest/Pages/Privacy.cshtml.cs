@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace FiftyBest.Pages;
+namespace Setoma.CompSci.Dis.FiftyBest.Pages;
 public class PrivacyModel : PageModel
 {
     private readonly ILogger<PrivacyModel> _logger;
