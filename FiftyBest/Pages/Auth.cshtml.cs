@@ -14,8 +14,6 @@ public class AuthNModel : PageModel
         _logger = logger;
     }
 
-    public bool IsAuthenticated => User?.Identity?.IsAuthenticated ?? false;
-
     public void OnGet()
     {
     }

@@ -5,10 +5,9 @@
 }
 <h1>@ViewData["Title"]</h1>
 
-<p>Is logged in: @Model.IsAuthenticated</p>
-
-@if (Model.IsAuthenticated)
+@if (User.Identity?.IsAuthenticated ?? false)
 {
+    <p>You're logged in as @User.Identity?.Name.</p>
 <form method="post">
     <button type="submit" asp-page-handler="logout">Log out</button>
 </form>
