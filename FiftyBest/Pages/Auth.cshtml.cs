@@ -2,24 +2,22 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Setoma.CompSci.Dis.FiftyBest.Data;
 using System.Security.Claims;
 
 namespace Setoma.CompSci.Dis.FiftyBest.Pages;
-public class AuthNModel : PageModel
+public class AuthNModel(IDataStore dataStore) : PageModel
 {
-    private readonly ILogger<AuthNModel> _logger;
-
-    public AuthNModel(ILogger<AuthNModel> logger)
-    {
-        _logger = logger;
-    }
-
     public void OnGet()
     {
     }
 
     public async Task<IActionResult> OnPost(string userName)
     {
+        var exists = await dataStore.UserExists(userName);
+        if (!exists)
+            await dataStore.CreateUser(userName);
+
         await HttpContext.SignInAsync(
             CookieAuthenticationDefaults.AuthenticationScheme,
             new ClaimsPrincipal(
