@@ -1,7 +1,23 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Setoma.CompSci.Dis.FiftyBest.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
+builder.Services
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie();
+
+builder.Services.AddSingleton<IDataStore>(sp =>
+{
+    var conf = sp.GetRequiredService<IConfiguration>();
+    var connectionString = conf.GetConnectionString("Restaurants");
+    if (string.IsNullOrWhiteSpace(connectionString))
+        throw new InvalidOperationException("Missing connection string 'Restaurants'.");
+    return new PostgreSqlDataStore(connectionString);
+});
 
 var app = builder.Build();
 
@@ -14,6 +30,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
