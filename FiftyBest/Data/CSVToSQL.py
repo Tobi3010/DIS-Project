@@ -7,9 +7,9 @@ def csv_to_sql(years):
 
     for year in years:
         read_path = os.path.join("Data",year+".csv")
-        with open(read_path, 'r') as read_file:
+        with open(read_path, "r") as read_file:
             for csvLine in read_file:
-                parts = csvLine.replace("'","").strip().split(',')
+                parts = csvLine.replace("'","").strip().split(",")
                 
                 rank = parts[0]
                 restaurantName = parts[1]
@@ -30,7 +30,7 @@ def csv_to_sql(years):
                     countries.append(countryName)
 
     write_path = os.path.join("Data", "all.sql")
-    with open(write_path, 'w') as write_file:
+    with open(write_path, "w") as write_file:
         for sqlLine in sqlLines:
             write_file.write(sqlLine + '\n')
 
