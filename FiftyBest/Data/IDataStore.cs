@@ -6,7 +6,6 @@ public interface IDataStore
 {
     Task CreateUser(string userName);
     Task<bool> UserExists(string userName);
-    Task InsertData(string fromYear);
     
     List<Restaurant> GetRestaurants(string sqlCmd);
     List<Country> GetCountries(string sqlCmd);
