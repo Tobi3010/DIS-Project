@@ -1,10 +1,40 @@
 ﻿@page
+@using Setoma.CompSci.Dis.FiftyBest.Models
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Fifty Best Restuarants</h1>
+    <p>Picke a year below, to get the fifty best restuarants that year</a>.</p>
 </div>
+
+<form class="form" method="post">
+    <input type="submit" value="2023" asp-page-handler="Button2023"/>
+    <input type="submit" value="2022"  asp-page-handler="Button2022"/>
+    <input type="submit" value="2021"  asp-page-handler="Button2021"/>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Year</th>
+            <th>Rank</th>
+            <th>Restaurant</th>
+            <th>City</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(Restaurant restaurant in Model.Restaurants)
+        {
+            <tr>
+                <td>@restaurant.Year;</td>
+                <td>@restaurant.Rank;</td>
+                <td>@restaurant.Name;</td>
+                <td>@restaurant.City;</td>
+            </tr>
+        }
+    </tbody>
+
+</table>
