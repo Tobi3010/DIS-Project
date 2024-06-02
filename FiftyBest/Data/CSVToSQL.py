@@ -15,6 +15,8 @@ def csv_to_sql(years):
                 restaurantName = parts[1]
                 cityName = parts[2]
                 countryName = parts[3]
+                if countryName.startswith(" "):
+                    countryName = countryName[1:]
 
                 sqlLines.append(f"INSERT INTO Restaurants (year, rank, restaurantName, cityName) "
                                     f"VALUES ('{year}', '{rank}', '{restaurantName}', '{cityName}');")
