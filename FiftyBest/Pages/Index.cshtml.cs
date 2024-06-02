@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.SignalR;
 using Setoma.CompSci.Dis.FiftyBest.Data;
 using Setoma.CompSci.Dis.FiftyBest.Models;
 using System.Diagnostics;
@@ -10,13 +11,16 @@ using System.Security.Claims;
 namespace Setoma.CompSci.Dis.FiftyBest.Pages;
 public class IndexModel: PageModel
 {
-    
     private readonly ILogger<IndexModel> _logger;
     private readonly IDataStore _dataStore;
     public List<Restaurant> Restaurants { get; set; }
     public List<Country> Countries { get; set; }
     public List<City> Cities { get; set; }
     private string SqlCmd { get; set; }
+    
+    private string Year { get; set; }
+    private string? Country { get; set; }
+   
 
     public IndexModel(ILogger<IndexModel> logger, IDataStore dataStore)
     {
@@ -26,35 +30,50 @@ public class IndexModel: PageModel
         Countries = new List<Country>();
         Cities = new List<City>();
         
-        SqlCmd = "SELECT year, rank, restaurantName, cityName FROM Restaurants;";
+        Year = "2023";
+        SqlCmd = "SELECT year, rank, restaurantName, cityName FROM Restaurants WHERE year = '"+Year+"';";;
+    }
 
+    private void Load()
+    {
+        Restaurants = _dataStore.GetRestaurants(SqlCmd);
+        Countries = _dataStore.GetCountries("SELECT countryName FROM Countries;");
+       
     }
 
     public void OnGet()
     {
-        Restaurants = _dataStore.GetRestaurants(SqlCmd);
-        Countries = _dataStore.GetCountries("SELECT countryName FROM Countries;");
+        SqlCmd = 
+        "SELECT year, rank, restaurantName, cityName FROM Restaurants WHERE year = '"+Year+"';";
+        Load();
     }
-     public async Task<IActionResult> OnPostYear(string year)
+    public IActionResult OnPostYear(string year)
     {
-        await _dataStore.InsertData(year);
-        return RedirectToPage();
+        Year = year;
+        SqlCmd = 
+        "SELECT year, rank, restaurantName, cityName FROM Restaurants " 
+        +"WHERE year = '"+Year+"';";
+        Load();
+        return Page();
     }
 
     public IActionResult OnPostCityButton(string city)
     {
         SqlCmd = 
-        "SELECT year, rank, restaurantName, cityName FROM Restaurants WHERE cityName = '"+city+"';";
-        Restaurants = _dataStore.GetRestaurants(SqlCmd);
+        "SELECT year, rank, restaurantName, cityName FROM Restaurants "
+        +"WHERE year = '"+Year+"' AND cityName = '"+city+"';";
+        Load();
         return Page();
     }
 
     public IActionResult OnPostCountryButton(string country)
-        {
-            SqlCmd = 
-            "SELECT R.year, R.rank, R.restaurantName, R.cityName FROM Restaurants R " 
-            +"JOIN Cities C ON R.cityName = C.cityName WHERE C.countryName = '"+country+"';";
-            Restaurants = _dataStore.GetRestaurants(SqlCmd);
-            return Page();
-        }
+    {
+        Country = country;
+        SqlCmd = 
+        "SELECT R.year, R.rank, R.restaurantName, R.cityName FROM Restaurants R " 
+        +"JOIN Cities C ON R.cityName = C.cityName "
+        +"WHERE R.year = '"+Year+"' AND C.countryName = '"+Country+"';";
+        Load();
+        return Page();
+    }
 }

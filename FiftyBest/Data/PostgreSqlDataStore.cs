@@ -24,46 +24,6 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         await cmd.ExecuteNonQueryAsync();
     }
 
-    public async Task InsertData(string fromYear)
-    {
-        using var dataSource = NpgsqlDataSource.Create(connectionString);
-        await using var cmdDelete = dataSource.CreateCommand(
-            "DELETE FROM Restaurants; DELETE FROM Cities; DELETE FROM Countries;"); // Delete the previous list
-        await cmdDelete.ExecuteNonQueryAsync();
-
-        string path = Path.Combine("..", "Data", fromYear+".csv");
-        using var reader = new StreamReader(path);
-        while (!reader.EndOfStream)
-        {
-            var line = await reader.ReadLineAsync();
-            if (!string.IsNullOrEmpty(line))
-            {
-                var parts = line.Split(','); //split line of .csv into parts separated by ","
-                // We can then access the different parts as seen below:
-                using var cmdInsert1 = dataSource.CreateCommand(
-                    "INSERT INTO Restaurants (Year, rank, restaurantName, cityName) "
-                    +"VALUES (@year, @rank, @restaurantName, @cityName);");
-                cmdInsert1.Parameters.AddWithValue("year", fromYear); 
-                cmdInsert1.Parameters.AddWithValue("rank", parts[0]); 
-                cmdInsert1.Parameters.AddWithValue("restaurantName", parts[1]);
-                cmdInsert1.Parameters.AddWithValue("cityName", parts[2]); 
-                await cmdInsert1.ExecuteNonQueryAsync();
-
-                using var cmdInsert2 = dataSource.CreateCommand(
-                    "INSERT INTO Cities (cityName, countryName) VALUES (@cityName, @countryName);");
-                cmdInsert2.Parameters.AddWithValue("cityName", parts[2]); 
-                cmdInsert2.Parameters.AddWithValue("countryName", parts[3]);
-                await cmdInsert2.ExecuteNonQueryAsync();
-
-                 using var cmdInsert3 = dataSource.CreateCommand(
-                    "INSERT INTO Countries (countryName) VALUES (@countryName);");
-                cmdInsert3.Parameters.AddWithValue("countryName", parts[3]);
-                await cmdInsert3.ExecuteNonQueryAsync(); 
-            }
-        }
-    }
-
-
     public List<Restaurant> GetRestaurants(string sqlCmd)
     {
         var restaurants = new List<Restaurant>();

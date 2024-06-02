@@ -11,22 +11,26 @@
     <p> Well, heres our lists of the fifty best restaurants around the world since 2002 </a>.</p>
 </div>
 
-<form class="form" method="post">
-    <label for="year">Enter Year between 2002 and 2023:</label>
-    <input type="text" id="year" name="year" required />
-    <input type="submit" value="Submit" asp-page-handler="Year" />
-</form>
+<div class="text-center">
+    <form class="form" method="post">
+        <label for="year">Enter Year between 2002 and 2023:</label>
+        <input type="text" id="year" name="year" required />
+        <input type="submit" value="Submit" asp-page-handler="Year" />
+    </form>
+</div>
 
-<form method="post" asp-page-handler="CountryButton">
-    <label for="country">Select a country:</label>
-    <select id="country" name="country">
-        @foreach (var country in Model.Countries)
-        {
-            <option value="@country.Name">@country.Name</option>
-        }
-    </select>
-    <button type="submit">Filter</button>
-</form>
+<div class="text-center">
+    <form method="post" asp-page-handler="CountryButton">
+        <label for="country">Select a country:</label>
+        <select id="country" name="country">
+            @foreach (var country in Model.Countries)
+            {
+                <option value="@country.Name">@country.Name</option>
+            }
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+</div>
 
 <table class="table">
     <thead>
