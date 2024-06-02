@@ -6,14 +6,26 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Fifty Best Restuarants</h1>
-    <p>Picke a year below, to get the fifty best restuarants that year</a>.</p>
+    <h1 class="display-4">Fifty Best Restaurants</h1>
+    <p> Hungry are you? And too classy for MCDonalds</a>?</p>
+    <p> Well, heres our lists of the fifty best restaurants around the world since 2002 </a>.</p>
 </div>
 
 <form class="form" method="post">
-    <input type="submit" value="2023" asp-page-handler="Button2023"/>
-    <input type="submit" value="2022"  asp-page-handler="Button2022"/>
-    <input type="submit" value="2021"  asp-page-handler="Button2021"/>
+    <label for="year">Enter Year between 2002 and 2023:</label>
+    <input type="text" id="year" name="year" required />
+    <input type="submit" value="Submit" asp-page-handler="Year" />
+</form>
+
+<form method="post" asp-page-handler="CountryButton">
+    <label for="country">Select a country:</label>
+    <select id="country" name="country">
+        @foreach (var country in Model.Countries)
+        {
+            <option value="@country.Name">@country.Name</option>
+        }
+    </select>
+    <button type="submit">Filter</button>
 </form>
 
 <table class="table">
@@ -32,7 +44,11 @@
                 <td>@restaurant.Year;</td>
                 <td>@restaurant.Rank;</td>
                 <td>@restaurant.Name;</td>
-                <td>@restaurant.City;</td>
+                <td>
+                    <form method="post" asp-page-handler="CityButton">
+                            <button type="submit" name="city" value="@restaurant.City">@restaurant.City</button>
+                    </form>
+                </td>
             </tr>
         }
     </tbody>
