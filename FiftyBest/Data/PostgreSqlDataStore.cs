@@ -31,7 +31,7 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
             "DELETE FROM Restaurants; DELETE FROM Cities; DELETE FROM Countries;"); // Delete the previous list
         await cmdDelete.ExecuteNonQueryAsync();
 
-        string path = Path.Combine("..", "DataCSV", fromYear+".csv");
+        string path = Path.Combine("..", "Data", fromYear+".csv");
         using var reader = new StreamReader(path);
         while (!reader.EndOfStream)
         {
