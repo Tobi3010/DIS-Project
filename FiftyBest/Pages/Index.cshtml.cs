@@ -16,10 +16,8 @@ public class IndexModel: PageModel
     public List<Restaurant> Restaurants { get; set; }
     public List<Country> Countries { get; set; }
     public List<City> Cities { get; set; }
-    private string SqlCmd { get; set; }
-    
-    private string Year { get; set; }
-    private string? Country { get; set; }
+    [BindProperty] public string Year { get; set; }
+    [BindProperty] public string? Country { get; set; }
    
 
     public IndexModel(ILogger<IndexModel> logger, IDataStore dataStore)
@@ -29,51 +27,49 @@ public class IndexModel: PageModel
         Restaurants = new List<Restaurant>();
         Countries = new List<Country>();
         Cities = new List<City>();
-        
         Year = "2023";
-        SqlCmd = "SELECT year, rank, restaurantName, cityName FROM Restaurants WHERE year = '"+Year+"';";;
     }
 
-    private void Load()
+    private async Task Load()
     {
-        Restaurants = _dataStore.GetRestaurants(SqlCmd);
-        Countries = _dataStore.GetCountries("SELECT countryName FROM Countries;");
+        Restaurants = await _dataStore.RestaurantsYear(Year);
+        Countries = await _dataStore.CountriesYear(Year);
+    }
+
+    public async Task OnGet()
+    {
+        await Load();
        
     }
-
-    public void OnGet()
+    public async Task<IActionResult> OnPostYear(string year)
     {
-        SqlCmd = 
-        "SELECT year, rank, restaurantName, cityName FROM Restaurants WHERE year = '"+Year+"';";
-        Load();
-    }
-    public IActionResult OnPostYear(string year)
-    {
+        await Load();
         Year = year;
-        SqlCmd = 
-        "SELECT year, rank, restaurantName, cityName FROM Restaurants " 
-        +"WHERE year = '"+Year+"';";
-        Load();
         return Page();
     }
 
-    public IActionResult OnPostCityButton(string city)
+    public async Task<IActionResult> OnPostCityButton(string city)
     {
-        SqlCmd = 
-        "SELECT year, rank, restaurantName, cityName FROM Restaurants "
-        +"WHERE year = '"+Year+"' AND cityName = '"+city+"';";
-        Load();
+        await Load();
+        Restaurants = await _dataStore.RestaurantsYearCity(Year, city);
+        if (Country != null) Cities = await _dataStore.CitiesYearCountry(Year, Country);
+         //Make sure the selected city appears first in the menu
+        int idx = Cities.FindIndex(x => x.Name == city); 
+        (Cities[idx], Cities[0]) = (Cities[0], Cities[idx]); //swap
         return Page();
     }
 
-    public IActionResult OnPostCountryButton(string country)
+    public async Task<IActionResult> OnPostCountryButton(string country)
     {
+        await Load();
         Country = country;
-        SqlCmd = 
-        "SELECT R.year, R.rank, R.restaurantName, R.cityName FROM Restaurants R " 
-        +"JOIN Cities C ON R.cityName = C.cityName "
-        +"WHERE R.year = '"+Year+"' AND C.countryName = '"+Country+"';";
-        Load();
+        if (Country != null) {
+            Restaurants = await _dataStore.RestaurantsYearCountry(Year, Country);
+            Cities = await _dataStore.CitiesYearCountry(Year, Country);
+            //Make sure the selected country appears first in the menu
+            int idx = Countries.FindIndex(x => x.Name == Country); 
+            (Countries[idx], Countries[0]) = (Countries[0], Countries[idx]); //swap
+        }
         return Page();
     }
 }

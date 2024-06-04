@@ -16,6 +16,7 @@
         <label for="year">Enter Year between 2002 and 2023:</label>
         <input type="text" id="year" name="year" required />
         <input type="submit" value="Submit" asp-page-handler="Year" />
+        <input type="hidden" asp-for="Year" />
     </form>
 </div>
 
@@ -29,9 +30,27 @@
             }
         </select>
         <button type="submit">Filter</button>
+        <input type="hidden" asp-for="Year" />
     </form>
 </div>
 
+@if (Model.Country != null)
+{
+    <div class="text-center">
+        <form method="post" asp-page-handler="CityButton">
+            <label for="city">Select a city:</label>
+            <select id="city" name="city">
+                @foreach (var city in Model.Cities)
+                {
+                    <option value="@city.Name">@city.Name</option>
+                }
+            </select>
+            <button type="submit">Filter</button>
+            <input type="hidden" asp-for="Year" />
+            <input type="hidden" asp-for="Country" />
+        </form>
+    </div>
+}
 <table class="table">
     <thead>
         <tr>
@@ -48,11 +67,7 @@
                 <td>@restaurant.Year;</td>
                 <td>@restaurant.Rank;</td>
                 <td>@restaurant.Name;</td>
-                <td>
-                    <form method="post" asp-page-handler="CityButton">
-                            <button type="submit" name="city" value="@restaurant.City">@restaurant.City</button>
-                    </form>
-                </td>
+                <td>@restaurant.City</td>
             </tr>
         }
     </tbody>

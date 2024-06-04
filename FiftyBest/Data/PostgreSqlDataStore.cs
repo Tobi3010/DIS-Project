@@ -1,4 +1,5 @@
 ﻿using Npgsql;
+using Microsoft.Net.Http;
 using Setoma.CompSci.Dis.FiftyBest.Models;
 
 namespace Setoma.CompSci.Dis.FiftyBest.Data;
@@ -24,19 +25,12 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         await cmd.ExecuteNonQueryAsync();
     }
 
-    public List<Restaurant> GetRestaurants(string sqlCmd)
+    //Queries for restaurants
+    public async Task<List<Restaurant>> GetRestaurants(NpgsqlCommand cmd)
     {
         var restaurants = new List<Restaurant>();
-
-        using var dataSource = NpgsqlDataSource.Create(connectionString);
-        using var connection = dataSource.CreateConnection();
-        connection.Open();
-
-        using var cmd = connection.CreateCommand();
-        cmd.CommandText = sqlCmd;
-
-        using var reader = cmd.ExecuteReader();
-        while (reader.Read()) {
+        using var reader = await cmd.ExecuteReaderAsync();
+        while (await reader.ReadAsync()) {
             string year = reader.GetString(0);
             string rank = reader.GetString(1); 
             string name = reader.GetString(2); 
@@ -45,44 +39,82 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         }
         return restaurants;
     }
+    public async Task<List<Restaurant>> RestaurantsYear(string year)
+    {
+        using var dataSource = NpgsqlDataSource.Create(connectionString);
+        using var cmd = dataSource.CreateCommand(
+            "SELECT year, rank, restaurantName, cityName FROM Restaurants"+
+            " WHERE year = @year;");
+        cmd.Parameters.AddWithValue("year", year); 
+        return await GetRestaurants(cmd);
+    }
+     public async Task<List<Restaurant>> RestaurantsYearCity(string year, string city)
+    {
+        using var dataSource = NpgsqlDataSource.Create(connectionString);
+        using var cmd = dataSource.CreateCommand(
+            "SELECT year, rank, restaurantName, cityName FROM Restaurants "+
+            "WHERE year = @year AND cityName = @city;");
+        cmd.Parameters.AddWithValue("year", year); 
+        cmd.Parameters.AddWithValue("city", city);
+        return await GetRestaurants(cmd);
+    }
+    public async Task<List<Restaurant>> RestaurantsYearCountry(string year, string country)
+    {
+        using var dataSource = NpgsqlDataSource.Create(connectionString);
+        using var cmd = dataSource.CreateCommand(
+            "SELECT R.year, R.rank, R.restaurantName, R.cityName FROM Restaurants R "+
+            "JOIN Cities C ON R.cityName = C.cityName "+
+            "WHERE R.year = @year AND C.countryName = @country;");
+        cmd.Parameters.AddWithValue("year", year); 
+        cmd.Parameters.AddWithValue("country", country); 
+        return await GetRestaurants(cmd);
+    }
 
-    public List<City> GetCities(string sqlCmd)
+    //Queries for Cites
+    public async Task<List<City>> GetCities(NpgsqlCommand cmd)
     {
         var cities = new List<City>();
-
-        using var dataSource = NpgsqlDataSource.Create(connectionString);
-        using var connection = dataSource.CreateConnection();
-        connection.Open();
-
-        using var cmd = connection.CreateCommand();
-        cmd.CommandText = sqlCmd;
-
-        using var reader = cmd.ExecuteReader();
-        while (reader.Read()) {
+        using var reader = await cmd.ExecuteReaderAsync();
+        while (await reader.ReadAsync()) {
             string cityName = reader.GetString(0);
             string countryName = reader.GetString(1); 
             cities.Add(new City(cityName, countryName));
         }
         return cities;
     }
+    public async Task<List<City>> CitiesYearCountry(string year, string country)
+    {
+        using var dataSource = NpgsqlDataSource.Create(connectionString);
+        using var cmd = dataSource.CreateCommand(
+            "SELECT DISTINCT C.cityName, C.countryName FROM Cities C "+ 
+            "JOIN Restaurants R ON R.cityName = C.cityName "+
+            "WHERE R.year = @year AND countryName = @country;"); 
+            cmd.Parameters.AddWithValue("year", year);
+        cmd.Parameters.AddWithValue("country", country);
+        return await GetCities(cmd);
+    }
 
-    public List<Country> GetCountries(string sqlCmd)
+    //Queries for Countries
+    public async Task<List<Country>> GetCountries(NpgsqlCommand cmd)
     {
         var countries = new List<Country>();
-
-        using var dataSource = NpgsqlDataSource.Create(connectionString);
-        using var connection = dataSource.CreateConnection();
-        connection.Open();
-
-        using var cmd = connection.CreateCommand();
-        cmd.CommandText = sqlCmd;
-
-        using var reader = cmd.ExecuteReader();
+        await using var reader = cmd.ExecuteReader();
         while (reader.Read()) {
             string countryName = reader.GetString(0); 
             countries.Add(new Country(countryName));
         }
         return countries;
+    }
+    public async Task<List<Country>> CountriesYear(string year)
+    {
+        using var dataSource = NpgsqlDataSource.Create(connectionString);
+        using var cmd = dataSource.CreateCommand(
+            "SELECT DISTINCT C.countryName FROM Countries C "+
+            "JOIN Cities Ci ON C.countryName = Ci.countryName "+
+            "JOIN Restaurants R ON R.cityName = Ci.cityName "+
+            "WHERE R.year = @year;"); 
+        cmd.Parameters.AddWithValue("year", year); 
+        return await GetCountries(cmd);
     }
 
 
