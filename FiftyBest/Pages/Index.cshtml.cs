@@ -63,13 +63,12 @@ public class IndexModel: PageModel
     {
         await Load();
         Country = country;
-        if (Country != null) {
-            Restaurants = await _dataStore.RestaurantsYearCountry(Year, Country);
-            Cities = await _dataStore.CitiesYearCountry(Year, Country);
-            //Make sure the selected country appears first in the menu
-            int idx = Countries.FindIndex(x => x.Name == Country); 
-            (Countries[idx], Countries[0]) = (Countries[0], Countries[idx]); //swap
-        }
+        Restaurants = await _dataStore.RestaurantsYearCountry(Year, Country);
+        Cities = await _dataStore.CitiesYearCountry(Year, Country);
+        //Make sure the selected country appears first in the menu
+        int idx = Countries.FindIndex(x => x.Name == Country); 
+        (Countries[idx], Countries[0]) = (Countries[0], Countries[idx]); //swap
+       
         return Page();
     }
 }
