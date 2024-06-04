@@ -24,7 +24,7 @@
     <form method="post" asp-page-handler="CountryButton">
         <label for="country">Select a country:</label>
         <select id="country" name="country">
-            @foreach (var country in Model.Countries)
+            @foreach (Country country in Model.Countries)
             {
                 <option value="@country.Name">@country.Name</option>
             }
@@ -40,7 +40,7 @@
         <form method="post" asp-page-handler="CityButton">
             <label for="city">Select a city:</label>
             <select id="city" name="city">
-                @foreach (var city in Model.Cities)
+                @foreach (City city in Model.Cities)
                 {
                     <option value="@city.Name">@city.Name</option>
                 }
