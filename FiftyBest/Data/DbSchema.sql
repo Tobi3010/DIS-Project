@@ -22,6 +22,5 @@ CREATE TABLE Countries (
 CREATE TABLE Ranks (
     year TEXT NOT NULL,
     rank TEXT NOT NULL,
-    restaurantName TEXT NOT NULL,
-    cityName TEXT NOT NULL
+    restaurantId INT NOT NULL
 );
