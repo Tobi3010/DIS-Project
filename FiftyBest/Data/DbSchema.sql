@@ -22,5 +22,5 @@ CREATE TABLE Countries (
 CREATE TABLE Ranks (
     year TEXT NOT NULL,
     rank TEXT NOT NULL,
-    restaurantId INT NOT NULL
+    restaurantId INT REFERENCES Restaurants(id) NOT NULL
 );
