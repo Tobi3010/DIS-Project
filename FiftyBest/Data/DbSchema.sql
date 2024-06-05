@@ -4,19 +4,19 @@ CREATE TABLE Users (
 );
 
 CREATE TABLE Restaurants (
-    year TEXT NOT NULL,
-    rank TEXT NOT NULL,
+    year INT NOT NULL,
+    rank INT NOT NULL,
     restaurantName TEXT NOT NULL,
     cityName TEXT NOT NULL
 );
 
 CREATE TABLE Cities (
-    cityName TEXT NOT NULL,
+    cityName TEXT UNIQUE NOT NULL,
     countryName TEXT NOT NULL
 );
 
 CREATE TABLE Countries (
-    countryName TEXT NOT NULL
+    countryName TEXT UNIQUE NOT NULL
 );
 
 

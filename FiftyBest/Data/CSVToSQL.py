@@ -19,7 +19,7 @@ def csv_to_sql(years):
                     countryName = countryName[1:]
 
                 sqlLines.append(f"INSERT INTO Restaurants (year, rank, restaurantName, cityName) "
-                                    f"VALUES ('{year}', '{rank}', '{restaurantName}', '{cityName}');")
+                                    f"VALUES ({year}, {rank}, '{restaurantName}', '{cityName}');")
                 if cityName not in cities:
                     sqlLines.append(f"INSERT INTO Cities (cityName, countryName) "
                                         f"VALUES ('{cityName}', '{countryName}');")

@@ -12,11 +12,14 @@
 </div>
 
 <div class="text-center">
+    @if (!(Model.Error == null)) {
+        <div class="alert alert-danger">@Model.Error</div>
+    }
     <form class="form" method="post">
-        <label for="year">Enter Year between 2002 and 2023:</label>
-        <input type="text" id="year" name="year" required />
+        <label for="years">Enter Year between 2002 and 2023:</label>
+        <input type="text" id="years" name="years" required />
         <input type="submit" value="Submit" asp-page-handler="Year" />
-        <input type="hidden" asp-for="Year" />
+        <input type="hidden" asp-for="Years" />
     </form>
 </div>
 
@@ -24,13 +27,12 @@
     <form method="post" asp-page-handler="CountryButton">
         <label for="country">Select a country:</label>
         <select id="country" name="country">
-            @foreach (Country country in Model.Countries)
-            {
+            @foreach (Country country in Model.Countries) {
                 <option value="@country.Name">@country.Name</option>
             }
         </select>
         <button type="submit">Filter</button>
-        <input type="hidden" asp-for="Year" />
+        <input type="hidden" asp-for="Years" />
     </form>
 </div>
 
@@ -40,13 +42,12 @@
         <form method="post" asp-page-handler="CityButton">
             <label for="city">Select a city:</label>
             <select id="city" name="city">
-                @foreach (City city in Model.Cities)
-                {
+                @foreach (City city in Model.Cities) {
                     <option value="@city.Name">@city.Name</option>
                 }
             </select>
             <button type="submit">Filter</button>
-            <input type="hidden" asp-for="Year" />
+            <input type="hidden" asp-for="Years" />
             <input type="hidden" asp-for="Country" />
         </form>
     </div>
@@ -64,9 +65,9 @@
         @foreach(Restaurant restaurant in Model.Restaurants)
         {
             <tr>
-                <td>@restaurant.Year;</td>
-                <td>@restaurant.Rank;</td>
-                <td>@restaurant.Name;</td>
+                <td>@restaurant.Year.ToString()</td>
+                <td>@restaurant.Rank.ToString()</td>
+                <td>@restaurant.Name</td>
                 <td>@restaurant.City</td>
             </tr>
         }
