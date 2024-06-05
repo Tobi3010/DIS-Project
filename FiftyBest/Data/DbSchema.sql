@@ -6,7 +6,8 @@ CREATE TABLE Users (
 CREATE TABLE Restaurants (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
     restaurantName TEXT NOT NULL,
-    cityName TEXT NOT NULL
+    cityName TEXT NOT NULL,
+    UNIQUE (restaurantName, cityName)
 );
 
 CREATE TABLE Cities (
