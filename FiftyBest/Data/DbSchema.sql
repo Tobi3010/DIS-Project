@@ -4,6 +4,7 @@ CREATE TABLE Users (
 );
 
 CREATE TABLE Restaurants (
+    id SERIAL PRIMARY KEY NOT NULL,
     restaurantName TEXT NOT NULL,
     cityName TEXT NOT NULL
 );
