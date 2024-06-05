@@ -26,7 +26,7 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
     }
 
     //Queries for restaurants
-    private async Task<List<Restaurant>> GetRestaurants(NpgsqlCommand cmd)
+    private static async Task<List<Restaurant>> GetRestaurants(NpgsqlCommand cmd)
     {
         var restaurants = new List<Restaurant>();
         using var reader = await cmd.ExecuteReaderAsync();
@@ -73,7 +73,7 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
     }
 
     //Queries for Cites
-    private async Task<List<City>> GetCities(NpgsqlCommand cmd)
+    private static async Task<List<City>> GetCities(NpgsqlCommand cmd)
     {
         var cities = new List<City>();
         using var reader = await cmd.ExecuteReaderAsync();
@@ -98,7 +98,7 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
     }
 
     //Queries for Countries
-    private async Task<List<Country>> GetCountries(NpgsqlCommand cmd)
+    private static async Task<List<Country>> GetCountries(NpgsqlCommand cmd)
     {
         var countries = new List<Country>();
         await using var reader = cmd.ExecuteReader();
