@@ -43,7 +43,7 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
     {
         using var dataSource = NpgsqlDataSource.Create(connectionString);
         using var cmd = dataSource.CreateCommand(
-            "SELECT year, rank, restaurantName, cityName FROM Restaurants"+
+            "SELECT year, rank, restaurantName, cityName FROM Ranks"+
             " WHERE year = @year;");
         cmd.Parameters.AddWithValue("year", year); 
         return await GetRestaurants(cmd);
@@ -52,7 +52,7 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
     {
         using var dataSource = NpgsqlDataSource.Create(connectionString);
         using var cmd = dataSource.CreateCommand(
-            "SELECT year, rank, restaurantName, cityName FROM Restaurants "+
+            "SELECT year, rank, restaurantName, cityName FROM Ranks "+
             "WHERE year = @year AND cityName = @city;");
         cmd.Parameters.AddWithValue("year", year); 
         cmd.Parameters.AddWithValue("city", city);
@@ -62,7 +62,7 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
     {
         using var dataSource = NpgsqlDataSource.Create(connectionString);
         using var cmd = dataSource.CreateCommand(
-            "SELECT R.year, R.rank, R.restaurantName, R.cityName FROM Restaurants R "+
+            "SELECT R.year, R.rank, R.restaurantName, R.cityName FROM Ranks R "+
             "JOIN Cities C ON R.cityName = C.cityName "+
             "WHERE R.year = @year AND C.countryName = @country;");
         cmd.Parameters.AddWithValue("year", year); 
@@ -87,7 +87,7 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         using var dataSource = NpgsqlDataSource.Create(connectionString);
         using var cmd = dataSource.CreateCommand(
             "SELECT DISTINCT C.cityName, C.countryName FROM Cities C "+ 
-            "JOIN Restaurants R ON R.cityName = C.cityName "+
+            "JOIN Ranks R ON R.cityName = C.cityName "+
             "WHERE R.year = @year AND countryName = @country;"); 
             cmd.Parameters.AddWithValue("year", year);
         cmd.Parameters.AddWithValue("country", country);
@@ -111,7 +111,7 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         using var cmd = dataSource.CreateCommand(
             "SELECT DISTINCT C.countryName FROM Countries C "+
             "JOIN Cities Ci ON C.countryName = Ci.countryName "+
-            "JOIN Restaurants R ON R.cityName = Ci.cityName "+
+            "JOIN Ranks R ON R.cityName = Ci.cityName "+
             "WHERE R.year = @year;"); 
         cmd.Parameters.AddWithValue("year", year); 
         return await GetCountries(cmd);
