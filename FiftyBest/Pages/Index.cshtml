@@ -65,12 +65,12 @@
         </tr>
     </thead>
     <tbody>
-        @foreach(Restaurant restaurant in Model.Restaurants)
+        @foreach(Ranking restaurant in Model.Restaurants)
         {
             <tr>
                 <td>@restaurant.Year</td>
                 <td>@restaurant.Rank</td>
-                <td>@restaurant.Name;</td>
+                <td><a asp-page="/Restaurant" asp-route-id="@restaurant.Id">@restaurant.Name</a></td>
                 <td>@restaurant.City</td>
             </tr>
         }

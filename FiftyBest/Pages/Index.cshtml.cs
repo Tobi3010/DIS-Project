@@ -10,7 +10,7 @@ public class IndexModel: PageModel
 {
     private readonly ILogger<IndexModel> _logger;
     private readonly IDataStore _dataStore;
-    public List<Restaurant> Restaurants { get; set; }
+    public List<Ranking> Restaurants { get; set; }
     public List<Country> Countries { get; set; }
     public List<City> Cities { get; set; }
     [BindProperty] public string Years { get; set; }
@@ -22,7 +22,7 @@ public class IndexModel: PageModel
     {
         _logger = logger;
         _dataStore = dataStore;
-        Restaurants = new List<Restaurant>();
+        Restaurants = new List<Ranking>();
         Countries = new List<Country>();
         Cities = new List<City>();
         Years = "2023";

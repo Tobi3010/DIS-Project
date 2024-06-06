@@ -9,9 +9,10 @@ public interface IDataStore
     Task<bool> UserExists(string userName);
     
     //Queries for restaurants:
-    Task<List<Restaurant>> RestaurantsYear(string[] year);
-    Task<List<Restaurant>> RestaurantsYearCity(string[] year, string city);
-    Task<List<Restaurant>> RestaurantsYearCountry(string[] year, string country);
+    Task<Restaurant?> ReadRestaurant(int id);
+    Task<List<Ranking>> RestaurantsYear(string[] year);
+    Task<List<Ranking>> RestaurantsYearCity(string[] year, string city);
+    Task<List<Ranking>> RestaurantsYearCountry(string[] year, string country);
 
     //Queries for cities:
     Task<List<City>> CitiesYearCountry(string[] year, string country);
