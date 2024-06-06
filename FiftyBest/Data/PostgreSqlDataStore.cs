@@ -110,7 +110,7 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         var countries = new List<Country>();
         await using var reader = cmd.ExecuteReader();
         while (reader.Read()) {
-            string countryName = reader.GetString(0); 
+            string countryName = (string)reader["countryName"];
             countries.Add(new Country(countryName));
         }
         return countries;
