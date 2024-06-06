@@ -40,6 +40,26 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         }
         return restaurants;
     }
+
+    public async Task<Restaurant?> ReadRestaurant(int id)
+    {
+        using var dataSource = NpgsqlDataSource.Create(connectionString);
+        using var cmd = dataSource.CreateCommand();
+        cmd.CommandText =
+            "SELECT restaurantName, cityName FROM Restaurants WHERE id = @id";
+        cmd.Parameters.AddWithValue("id", id);
+
+        using var reader = await cmd.ExecuteReaderAsync();
+        if (await reader.ReadAsync())
+        {
+            var name = (string)reader["restaurantName"];
+            var city = (string)reader["cityName"];
+            return new Restaurant(id, name, city);
+        }
+
+        return null;
+    }
+
     public async Task<List<Ranking>> RestaurantsYear(string[] years)
     {
         using var dataSource = NpgsqlDataSource.Create(connectionString);
