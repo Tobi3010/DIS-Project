@@ -84,8 +84,8 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         var cities = new List<City>();
         using var reader = await cmd.ExecuteReaderAsync();
         while (await reader.ReadAsync()) {
-            string cityName = reader.GetString(0);
-            string countryName = reader.GetString(1); 
+            string cityName = (string)reader["cityName"];
+            string countryName = (string)reader["countryName"];
             cities.Add(new City(cityName, countryName));
         }
         return cities;
