@@ -31,11 +31,12 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         var restaurants = new List<Restaurant>();
         using var reader = await cmd.ExecuteReaderAsync();
         while (await reader.ReadAsync()) {
+            int id = (int)reader["id"];
             int year = (int)reader["year"];
             int rank = (int)reader["rank"];
             string name = (string)reader["restaurantName"];
             string city = (string)reader["cityName"];
-            restaurants.Add(new Restaurant(year, rank, name, city));
+            restaurants.Add(new Restaurant(id, year, rank, name, city));
         }
         return restaurants;
     }
@@ -44,7 +45,7 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         using var dataSource = NpgsqlDataSource.Create(connectionString);
         using var cmd = dataSource.CreateCommand();
         cmd.CommandText =
-            "SELECT Ranks.year, Ranks.rank, Rs.restaurantName, Rs.cityName FROM Ranks " +
+            "SELECT Rs.id, Ranks.year, Ranks.rank, Rs.restaurantName, Rs.cityName FROM Ranks " +
             "JOIN Restaurants Rs ON Ranks.restaurantId = Rs.id " +
             $"WHERE Ranks.year IN ({YearsToSQL(years, cmd)}) " +
             "ORDER BY Ranks.rank ASC, Ranks.year DESC;";
@@ -56,7 +57,7 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         using var dataSource = NpgsqlDataSource.Create(connectionString);
         using var cmd = dataSource.CreateCommand();
         cmd.CommandText =
-            "SELECT Ranks.year, Ranks.rank, Rs.restaurantName, Rs.cityName FROM Ranks " +
+            "SELECT Rs.id, Ranks.year, Ranks.rank, Rs.restaurantName, Rs.cityName FROM Ranks " +
             "JOIN Restaurants Rs ON Ranks.restaurantId = Rs.id " +
             $"WHERE Ranks.year IN ({YearsToSQL(years, cmd)}) AND Rs.cityName = @city "+
             "ORDER BY Ranks.rank ASC, Ranks.year DESC;";
@@ -69,7 +70,7 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         using var dataSource = NpgsqlDataSource.Create(connectionString);
         using var cmd = dataSource.CreateCommand();
         cmd.CommandText =
-            "SELECT Ranks.year, Ranks.rank, Rs.restaurantName, Rs.cityName FROM Ranks " +
+            "SELECT Rs.id, Ranks.year, Ranks.rank, Rs.restaurantName, Rs.cityName FROM Ranks " +
             "JOIN Restaurants Rs ON Ranks.restaurantId = Rs.id " +
             "JOIN Cities C ON Rs.cityName = C.cityName "+
             $"WHERE Ranks.year IN ({YearsToSQL(years, cmd)}) AND C.countryName = @country "+
