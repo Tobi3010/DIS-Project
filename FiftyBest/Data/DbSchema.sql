@@ -10,6 +10,12 @@ CREATE TABLE Restaurants (
     UNIQUE (restaurantName, cityName)
 );
 
+CREATE TABLE Visits (
+    userId INT REFERENCES Users(id) NOT NULL,
+    restaurantId INT REFERENCES Restaurants(id) NOT NULL,
+    PRIMARY KEY (userId, restaurantId)
+);
+
 CREATE TABLE Cities (
     cityName TEXT NOT NULL,
     countryName TEXT NOT NULL
