@@ -26,7 +26,7 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
     }
 
     //Queries for restaurants
-    public async Task<List<Restaurant>> GetRestaurants(NpgsqlCommand cmd)
+    private static async Task<List<Restaurant>> GetRestaurants(NpgsqlCommand cmd)
     {
         var restaurants = new List<Restaurant>();
         using var reader = await cmd.ExecuteReaderAsync();
@@ -49,7 +49,8 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         cmd.Parameters.AddWithValue("year", year); 
         return await GetRestaurants(cmd);
     }
-     public async Task<List<Restaurant>> RestaurantsYearCity(string year, string city)
+
+    public async Task<List<Restaurant>> RestaurantsYearCity(string year, string city)
     {
         using var dataSource = NpgsqlDataSource.Create(connectionString);
         using var cmd = dataSource.CreateCommand(
@@ -60,6 +61,7 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         cmd.Parameters.AddWithValue("city", city);
         return await GetRestaurants(cmd);
     }
+
     public async Task<List<Restaurant>> RestaurantsYearCountry(string year, string country)
     {
         using var dataSource = NpgsqlDataSource.Create(connectionString);
@@ -74,7 +76,7 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
     }
 
     //Queries for Cites
-    public async Task<List<City>> GetCities(NpgsqlCommand cmd)
+    private static async Task<List<City>> GetCities(NpgsqlCommand cmd)
     {
         var cities = new List<City>();
         using var reader = await cmd.ExecuteReaderAsync();
@@ -85,6 +87,7 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         }
         return cities;
     }
+
     public async Task<List<City>> CitiesYearCountry(string year, string country)
     {
         using var dataSource = NpgsqlDataSource.Create(connectionString);
@@ -99,7 +102,7 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
     }
 
     //Queries for Countries
-    public async Task<List<Country>> GetCountries(NpgsqlCommand cmd)
+    private static async Task<List<Country>> GetCountries(NpgsqlCommand cmd)
     {
         var countries = new List<Country>();
         await using var reader = cmd.ExecuteReader();
@@ -109,6 +112,7 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         }
         return countries;
     }
+
     public async Task<List<Country>> CountriesYear(string year)
     {
         using var dataSource = NpgsqlDataSource.Create(connectionString);
@@ -121,11 +125,4 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         cmd.Parameters.AddWithValue("year", year); 
         return await GetCountries(cmd);
     }
-
-
-    
-        
-
-
-
 }
