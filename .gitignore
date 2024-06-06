@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Don't check in development appsetings, allowing one to keep
+# ConnectionString on local disk
+FiftyBest/appsettings.Development.json
