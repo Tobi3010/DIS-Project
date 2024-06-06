@@ -43,8 +43,9 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
     {
         using var dataSource = NpgsqlDataSource.Create(connectionString);
         using var cmd = dataSource.CreateCommand(
-            "SELECT year, rank, restaurantName, cityName FROM Restaurants"+
-            " WHERE year = @year;");
+            "SELECT Ranks.year, Ranks.rank, Rs.restaurantName, Rs.cityName FROM Ranks " +
+            "JOIN Restaurants Rs ON Ranks.restaurantId = Rs.id " +
+            "WHERE Ranks.year = @year;");
         cmd.Parameters.AddWithValue("year", year); 
         return await GetRestaurants(cmd);
     }
@@ -52,8 +53,9 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
     {
         using var dataSource = NpgsqlDataSource.Create(connectionString);
         using var cmd = dataSource.CreateCommand(
-            "SELECT year, rank, restaurantName, cityName FROM Restaurants "+
-            "WHERE year = @year AND cityName = @city;");
+            "SELECT Ranks.year, Ranks.rank, Rs.restaurantName, Rs.cityName FROM Ranks " +
+            "JOIN Restaurants Rs ON Ranks.restaurantId = Rs.id " +
+            "WHERE Ranks.year = @year AND Rs.cityName = @city;");
         cmd.Parameters.AddWithValue("year", year); 
         cmd.Parameters.AddWithValue("city", city);
         return await GetRestaurants(cmd);
@@ -62,9 +64,10 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
     {
         using var dataSource = NpgsqlDataSource.Create(connectionString);
         using var cmd = dataSource.CreateCommand(
-            "SELECT R.year, R.rank, R.restaurantName, R.cityName FROM Restaurants R "+
-            "JOIN Cities C ON R.cityName = C.cityName "+
-            "WHERE R.year = @year AND C.countryName = @country;");
+            "SELECT Ranks.year, Ranks.rank, Rs.restaurantName, Rs.cityName FROM Ranks " +
+            "JOIN Restaurants Rs ON Ranks.restaurantId = Rs.id " +
+            "JOIN Cities C ON Rs.cityName = C.cityName "+
+            "WHERE Ranks.year = @year AND C.countryName = @country;");
         cmd.Parameters.AddWithValue("year", year); 
         cmd.Parameters.AddWithValue("country", country); 
         return await GetRestaurants(cmd);
@@ -86,9 +89,10 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
     {
         using var dataSource = NpgsqlDataSource.Create(connectionString);
         using var cmd = dataSource.CreateCommand(
-            "SELECT DISTINCT C.cityName, C.countryName FROM Cities C "+ 
-            "JOIN Restaurants R ON R.cityName = C.cityName "+
-            "WHERE R.year = @year AND countryName = @country;"); 
+            "SELECT DISTINCT C.cityName, C.countryName FROM Cities C " +
+            "JOIN Restaurants Rs ON Rs.cityName = C.cityName "+
+            "JOIN Ranks ON Rs.id = Ranks.restaurantId "+
+            "WHERE Ranks.year = @year AND C.countryName = @country;"); 
             cmd.Parameters.AddWithValue("year", year);
         cmd.Parameters.AddWithValue("country", country);
         return await GetCities(cmd);
@@ -111,8 +115,9 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         using var cmd = dataSource.CreateCommand(
             "SELECT DISTINCT C.countryName FROM Countries C "+
             "JOIN Cities Ci ON C.countryName = Ci.countryName "+
-            "JOIN Restaurants R ON R.cityName = Ci.cityName "+
-            "WHERE R.year = @year;"); 
+            "JOIN Restaurants Rs ON Rs.cityName = Ci.cityName "+
+            "JOIN Ranks ON Rs.id = Ranks.restaurantId "+
+            "WHERE Ranks.year = @year;"); 
         cmd.Parameters.AddWithValue("year", year); 
         return await GetCountries(cmd);
     }
