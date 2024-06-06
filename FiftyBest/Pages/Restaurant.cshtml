@@ -6,6 +6,13 @@
 <div class="text-center">
     <h1 class="display-4">@Model.Restaurant?.Name</h1>
     <p>@Model.Restaurant?.City</p>
+    @if (Model.IsAuthenticated)
+    {
+        <form method="post" name="toggle">
+            @Html.LabelFor(m => m.HasVisited)
+            @Html.CheckBoxFor(m => m.HasVisited, new { onClick = "document.toggle.submit();" })
+        </form>
+    }
 </div>
 
 <table class="table">

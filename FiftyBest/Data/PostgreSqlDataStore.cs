@@ -25,6 +25,50 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         await cmd.ExecuteNonQueryAsync();
     }
 
+    public async Task<bool> UserHasVisited(string userName, int restaurantId)
+    {
+        using var dataSource = NpgsqlDataSource.Create(connectionString);
+        using var cmd = dataSource.CreateCommand("""
+            SELECT COUNT(userId)
+            FROM Users
+            JOIN Visits ON Users.id = Visits.userId
+            WHERE Users.userName = @userName
+            AND Visits.restaurantId = @restaurantId
+            """);
+        cmd.Parameters.AddWithValue("userName", userName);
+        cmd.Parameters.AddWithValue("restaurantId", restaurantId);
+        var count = await cmd.ExecuteScalarAsync();
+        return count is long i && i > 0;
+    }
+
+    public async Task AddVisit(string userName, int restaurantId)
+    {
+        using var dataSource = NpgsqlDataSource.Create(connectionString);
+        using var cmd = dataSource.CreateCommand("""
+            INSERT INTO Visits (userId, restaurantId)
+            VALUES (
+                (SELECT id FROM Users WHERE userName = @userName),
+                @restaurantId
+            )
+            """);
+        cmd.Parameters.AddWithValue("userName", userName);
+        cmd.Parameters.AddWithValue("restaurantId", restaurantId);
+        await cmd.ExecuteNonQueryAsync();
+    }
+
+    public async Task RemoveVisit(string userName, int restaurantId)
+    {
+        using var dataSource = NpgsqlDataSource.Create(connectionString);
+        using var cmd = dataSource.CreateCommand("""
+            DELETE FROM Visits
+            WHERE userId = (SELECT id FROM Users WHERE userName = @userName)
+            AND restaurantId = @restaurantId
+            """);
+        cmd.Parameters.AddWithValue("userName", userName);
+        cmd.Parameters.AddWithValue("restaurantId", restaurantId);
+        await cmd.ExecuteNonQueryAsync();
+    }
+
     //Queries for restaurants
     private static async Task<List<Ranking>> GetRestaurants(NpgsqlCommand cmd)
     {

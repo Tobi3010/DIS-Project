@@ -8,7 +8,10 @@ public interface IDataStore
 {
     Task CreateUser(string userName);
     Task<bool> UserExists(string userName);
-    
+    Task<bool> UserHasVisited(string userName, int restaurantId);
+    Task AddVisit(string userName, int restaurantId);
+    Task RemoveVisit(string userName, int restaurantId);
+
     //Queries for restaurants:
     Task<Restaurant?> ReadRestaurant(int id);
     Task<IReadOnlyCollection<Ranking>> ReadRankings(int restuarantId);
