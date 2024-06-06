@@ -2,6 +2,7 @@
 namespace Setoma.CompSci.Dis.FiftyBest.Data;
 using Setoma.CompSci.Dis.FiftyBest.Models;
 using Npgsql;
+using System.Collections.Generic;
 
 public interface IDataStore
 {
@@ -10,6 +11,7 @@ public interface IDataStore
     
     //Queries for restaurants:
     Task<Restaurant?> ReadRestaurant(int id);
+    Task<IReadOnlyCollection<Ranking>> ReadRankings(int restuarantId);
     Task<List<Ranking>> RestaurantsYear(string[] year);
     Task<List<Ranking>> RestaurantsYearCity(string[] year, string city);
     Task<List<Ranking>> RestaurantsYearCountry(string[] year, string country);

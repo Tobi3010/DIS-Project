@@ -7,3 +7,21 @@
     <h1 class="display-4">@Model.Restaurant?.Name</h1>
     <p>@Model.Restaurant?.City</p>
 </div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Year</th>
+            <th>Rank</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var restaurant in Model.Rankings)
+    {
+        <tr>
+            <td>@restaurant.Year</td>
+            <td>@restaurant.Rank</td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -59,6 +59,19 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
 
         return null;
     }
+    public async Task<IReadOnlyCollection<Ranking>> ReadRankings(int restuarantId)
+    {
+        using var dataSource = NpgsqlDataSource.Create(connectionString);
+        using var cmd = dataSource.CreateCommand();
+        cmd.CommandText = """
+            SELECT Rs.id, Ranks.year, Ranks.rank, Rs.restaurantName, Rs.cityName
+            FROM Ranks
+            JOIN Restaurants Rs ON Ranks.restaurantId = Rs.id
+            WHERE Rs.id = @id
+            """;
+        cmd.Parameters.AddWithValue("id", restuarantId);
+        return await GetRestaurants(cmd);
+    }
 
     public async Task<List<Ranking>> RestaurantsYear(string[] years)
     {
@@ -160,7 +173,4 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         }
         return string.Join(",", names);
     }
-
-
-
 }
