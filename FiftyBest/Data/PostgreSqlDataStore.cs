@@ -31,10 +31,10 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         var restaurants = new List<Restaurant>();
         using var reader = await cmd.ExecuteReaderAsync();
         while (await reader.ReadAsync()) {
-            int year = reader.GetInt32(0);
-            int rank = reader.GetInt32(1); 
-            string name = reader.GetString(2); 
-            string city = reader.GetString(3);
+            int year = (int)reader["year"];
+            int rank = (int)reader["rank"];
+            string name = (string)reader["restaurantName"];
+            string city = (string)reader["cityName"];
             restaurants.Add(new Restaurant(year, rank, name, city));
         }
         return restaurants;
