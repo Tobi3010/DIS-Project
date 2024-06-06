@@ -6,9 +6,9 @@ namespace Setoma.CompSci.Dis.FiftyBest.Models;
         public string Year { get; set; }
         public string Rank { get; set; }
         public string City { get; set; }
-        public Restaurant(string year, string rank, string name, string city){
-            Year = year;
-            Rank = rank;
+        public Restaurant(int year, int rank, string name, string city){
+            Year = year.ToString();
+            Rank = rank.ToString();
             Name = name;
             City = city;
         }

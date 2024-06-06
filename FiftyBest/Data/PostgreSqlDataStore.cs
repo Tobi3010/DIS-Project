@@ -31,44 +31,47 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         var restaurants = new List<Restaurant>();
         using var reader = await cmd.ExecuteReaderAsync();
         while (await reader.ReadAsync()) {
-            string year = reader.GetString(0);
-            string rank = reader.GetString(1); 
+            int year = reader.GetInt32(0);
+            int rank = reader.GetInt32(1); 
             string name = reader.GetString(2); 
             string city = reader.GetString(3);
             restaurants.Add(new Restaurant(year, rank, name, city));
         }
         return restaurants;
     }
-    public async Task<List<Restaurant>> RestaurantsYear(string year)
+    public async Task<List<Restaurant>> RestaurantsYear(string[] years)
     {
         using var dataSource = NpgsqlDataSource.Create(connectionString);
-        using var cmd = dataSource.CreateCommand(
+        using var cmd = dataSource.CreateCommand();
+        cmd.CommandText =
             "SELECT Ranks.year, Ranks.rank, Rs.restaurantName, Rs.cityName FROM Ranks " +
             "JOIN Restaurants Rs ON Ranks.restaurantId = Rs.id " +
-            "WHERE Ranks.year = @year;");
-        cmd.Parameters.AddWithValue("year", year); 
+            $"WHERE Ranks.year IN ({YearsToSQL(years, cmd)}) " +
+            "ORDER BY Ranks.rank ASC, Ranks.year DESC;";
         return await GetRestaurants(cmd);
     }
-     public async Task<List<Restaurant>> RestaurantsYearCity(string year, string city)
+     public async Task<List<Restaurant>> RestaurantsYearCity(string[] years, string city)
     {
         using var dataSource = NpgsqlDataSource.Create(connectionString);
-        using var cmd = dataSource.CreateCommand(
+        using var cmd = dataSource.CreateCommand();
+        cmd.CommandText =
             "SELECT Ranks.year, Ranks.rank, Rs.restaurantName, Rs.cityName FROM Ranks " +
             "JOIN Restaurants Rs ON Ranks.restaurantId = Rs.id " +
-            "WHERE Ranks.year = @year AND Rs.cityName = @city;");
-        cmd.Parameters.AddWithValue("year", year); 
+            $"WHERE Ranks.year IN ({YearsToSQL(years, cmd)}) AND Rs.cityName = @city "+
+            "ORDER BY Ranks.rank ASC, Ranks.year DESC;";
         cmd.Parameters.AddWithValue("city", city);
         return await GetRestaurants(cmd);
     }
-    public async Task<List<Restaurant>> RestaurantsYearCountry(string year, string country)
+    public async Task<List<Restaurant>> RestaurantsYearCountry(string[] years, string country)
     {
         using var dataSource = NpgsqlDataSource.Create(connectionString);
-        using var cmd = dataSource.CreateCommand(
+        using var cmd = dataSource.CreateCommand();
+        cmd.CommandText =
             "SELECT Ranks.year, Ranks.rank, Rs.restaurantName, Rs.cityName FROM Ranks " +
             "JOIN Restaurants Rs ON Ranks.restaurantId = Rs.id " +
             "JOIN Cities C ON Rs.cityName = C.cityName "+
-            "WHERE Ranks.year = @year AND C.countryName = @country;");
-        cmd.Parameters.AddWithValue("year", year); 
+            $"WHERE Ranks.year IN ({YearsToSQL(years, cmd)}) AND C.countryName = @country "+
+            "ORDER BY Ranks.rank ASC, Ranks.year DESC;";
         cmd.Parameters.AddWithValue("country", country); 
         return await GetRestaurants(cmd);
     }
@@ -85,15 +88,15 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         }
         return cities;
     }
-    public async Task<List<City>> CitiesYearCountry(string year, string country)
+    public async Task<List<City>> CitiesYearCountry(string[] years, string country)
     {
         using var dataSource = NpgsqlDataSource.Create(connectionString);
-        using var cmd = dataSource.CreateCommand(
+        using var cmd = dataSource.CreateCommand();
+        cmd.CommandText =
             "SELECT DISTINCT C.cityName, C.countryName FROM Cities C " +
             "JOIN Restaurants Rs ON Rs.cityName = C.cityName "+
             "JOIN Ranks ON Rs.id = Ranks.restaurantId "+
-            "WHERE Ranks.year = @year AND C.countryName = @country;"); 
-            cmd.Parameters.AddWithValue("year", year);
+            $"WHERE Ranks.year IN ({YearsToSQL(years, cmd)}) AND C.countryName = @country;"; 
         cmd.Parameters.AddWithValue("country", country);
         return await GetCities(cmd);
     }
@@ -109,22 +112,28 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         }
         return countries;
     }
-    public async Task<List<Country>> CountriesYear(string year)
+    public async Task<List<Country>> CountriesYear(string[] years)
     {
         using var dataSource = NpgsqlDataSource.Create(connectionString);
-        using var cmd = dataSource.CreateCommand(
+        using var cmd = dataSource.CreateCommand();
+        cmd.CommandText =
             "SELECT DISTINCT C.countryName FROM Countries C "+
             "JOIN Cities Ci ON C.countryName = Ci.countryName "+
             "JOIN Restaurants Rs ON Rs.cityName = Ci.cityName "+
             "JOIN Ranks ON Rs.id = Ranks.restaurantId "+
-            "WHERE Ranks.year = @year;"); 
-        cmd.Parameters.AddWithValue("year", year); 
+            $"WHERE Ranks.year IN ({YearsToSQL(years, cmd)});"; 
         return await GetCountries(cmd);
     }
-
-
-    
-        
+    private string YearsToSQL(string[] years, NpgsqlCommand cmd)
+    {
+        if (years.Length == 0) {  return "0000"; } // In case of invalid input
+        List<string> names = new List<string>();
+        for (int i = 0; i < years.Length; i++) {
+            names.Add($"@year{i}");
+            cmd.Parameters.AddWithValue($"@year{i}", int.Parse(years[i]));
+        }
+        return string.Join(",", names);
+    }
 
 
 

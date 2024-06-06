@@ -12,11 +12,15 @@
 </div>
 
 <div class="text-center">
+    @if (!(Model.Error == null)) 
+    {
+        <div class="alert alert-danger">@Model.Error</div>
+    }
     <form class="form" method="post">
-        <label for="year">Enter Year between 2002 and 2023:</label>
-        <input type="text" id="year" name="year" required />
+        <label for="years">Enter Year between 2002 and 2023:</label>
+        <input type="text" id="years" name="years" required />
         <input type="submit" value="Submit" asp-page-handler="Year" />
-        <input type="hidden" asp-for="Year" />
+        <input type="hidden" asp-for="Years" />
     </form>
 </div>
 
@@ -30,7 +34,7 @@
             }
         </select>
         <button type="submit">Filter</button>
-        <input type="hidden" asp-for="Year" />
+        <input type="hidden" asp-for="Years" />
     </form>
 </div>
 
@@ -46,7 +50,7 @@
                 }
             </select>
             <button type="submit">Filter</button>
-            <input type="hidden" asp-for="Year" />
+            <input type="hidden" asp-for="Years" />
             <input type="hidden" asp-for="Country" />
         </form>
     </div>
@@ -64,8 +68,8 @@
         @foreach(Restaurant restaurant in Model.Restaurants)
         {
             <tr>
-                <td>@restaurant.Year;</td>
-                <td>@restaurant.Rank;</td>
+                <td>@restaurant.Year</td>
+                <td>@restaurant.Rank</td>
                 <td>@restaurant.Name;</td>
                 <td>@restaurant.City</td>
             </tr>
