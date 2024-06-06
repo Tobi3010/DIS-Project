@@ -26,9 +26,9 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
     }
 
     //Queries for restaurants
-    private static async Task<List<Restaurant>> GetRestaurants(NpgsqlCommand cmd)
+    private static async Task<List<Ranking>> GetRestaurants(NpgsqlCommand cmd)
     {
-        var restaurants = new List<Restaurant>();
+        var restaurants = new List<Ranking>();
         using var reader = await cmd.ExecuteReaderAsync();
         while (await reader.ReadAsync()) {
             int id = (int)reader["id"];
@@ -36,11 +36,11 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
             int rank = (int)reader["rank"];
             string name = (string)reader["restaurantName"];
             string city = (string)reader["cityName"];
-            restaurants.Add(new Restaurant(id, year, rank, name, city));
+            restaurants.Add(new Ranking(id, year, rank, name, city));
         }
         return restaurants;
     }
-    public async Task<List<Restaurant>> RestaurantsYear(string[] years)
+    public async Task<List<Ranking>> RestaurantsYear(string[] years)
     {
         using var dataSource = NpgsqlDataSource.Create(connectionString);
         using var cmd = dataSource.CreateCommand();
@@ -52,7 +52,7 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         return await GetRestaurants(cmd);
     }
 
-     public async Task<List<Restaurant>> RestaurantsYearCity(string[] years, string city)
+     public async Task<List<Ranking>> RestaurantsYearCity(string[] years, string city)
     {
         using var dataSource = NpgsqlDataSource.Create(connectionString);
         using var cmd = dataSource.CreateCommand();
@@ -65,7 +65,7 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         return await GetRestaurants(cmd);
     }
 
-    public async Task<List<Restaurant>> RestaurantsYearCountry(string[] years, string country)
+    public async Task<List<Ranking>> RestaurantsYearCountry(string[] years, string country)
     {
         using var dataSource = NpgsqlDataSource.Create(connectionString);
         using var cmd = dataSource.CreateCommand();

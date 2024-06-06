@@ -1,6 +1,6 @@
 namespace Setoma.CompSci.Dis.FiftyBest.Models;
 
-public sealed record Restaurant(
+public sealed record Ranking(
     int Id,
     int Year,
     int Rank,
