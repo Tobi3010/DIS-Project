@@ -57,7 +57,7 @@ info: Microsoft.Hosting.Lifetime[0]
 
 Notice that the `Now listening on` address may be different on your system. 
 
-Now that it is up and running, heres a quick userguide four our webapp :
+Now that it is up and running, heres a quick userguide for our webapp :
 
 [ User page ]
 This is a good place to start. 
