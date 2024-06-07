@@ -69,6 +69,30 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         await cmd.ExecuteNonQueryAsync();
     }
 
+    public async Task<IReadOnlyCollection<Restaurant>> ReadVisitedRestaurants(
+        string userName)
+    {
+        using var dataSource = NpgsqlDataSource.Create(connectionString);
+        using var cmd = dataSource.CreateCommand("""
+            SELECT Rs.id, Rs.restaurantName, Rs.cityName
+            FROM Restaurants Rs
+            JOIN Visits ON Rs.id = Visits.restaurantId
+            JOIN Users ON Visits.userId = Users.id
+            WHERE Users.userName = @userName
+            """);
+        cmd.Parameters.AddWithValue("userName", userName);
+
+        var restaurants = new List<Restaurant>();
+        using var reader = await cmd.ExecuteReaderAsync();
+        while (await reader.ReadAsync()) {
+            int id = (int)reader["id"];
+            string name = (string)reader["restaurantName"];
+            string city = (string)reader["cityName"];
+            restaurants.Add(new Restaurant(id, name, city));
+        }
+        return restaurants;
+    }
+
     //Queries for restaurants
     private static async Task<List<Ranking>> GetRestaurants(NpgsqlCommand cmd)
     {

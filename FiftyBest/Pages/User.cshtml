@@ -10,6 +10,25 @@
 <form method="post">
     <button type="submit" asp-page-handler="logout">Log out</button>
 </form>
+
+<h2>Restaurants visited</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>City</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var restaurant in Model.Restaurants)
+            {
+                <tr>
+                    <td>@restaurant.Name</td>
+                    <td>@restaurant.City</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
 else
 {
