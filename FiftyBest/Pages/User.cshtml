@@ -1,13 +1,12 @@
 ﻿@page
 @model AuthNModel
 @{
-    ViewData["Title"] = "Authentication";
+    ViewData["Title"] = @User.Identity?.Name ?? "Log in";
 }
 <h1>@ViewData["Title"]</h1>
 
 @if (User.Identity?.IsAuthenticated ?? false)
 {
-    <p>You're logged in as @User.Identity?.Name.</p>
 <form method="post">
     <button type="submit" asp-page-handler="logout">Log out</button>
 </form>
