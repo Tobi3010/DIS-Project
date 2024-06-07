@@ -11,6 +11,15 @@
     <button type="submit" asp-page-handler="logout">Log out</button>
 </form>
 
+<div class="text-center">
+    <form method="post" asp-page-handler="ChangeUsername">
+        <label for="new_userName">New username:</label>
+        <input type="text" id="new_userName" name="new_userName" required />
+        <input type="submit" value="Change" />
+        <input type="hidden" name="userName" value="@User.Identity.Name" />
+    </form>
+</div>
+
 <h2>Restaurants visited</h2>
     <table class="table">
         <thead>
@@ -32,6 +41,7 @@
 }
 else
 {
+
 <p>Type your user name to log in.</p>
 <p>Since this is just a demo site, it requires no password.</p>
 <p>The first time you supply a new user name, it will automatically be saved in the database. Thus, no explicit 'register user' process is required.</p>

@@ -25,6 +25,16 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         await cmd.ExecuteNonQueryAsync();
     }
 
+    public async Task UpdateUser(string userName, string new_userName)
+    {
+        using var dataSource = NpgsqlDataSource.Create(connectionString);
+        using var cmd = dataSource.CreateCommand(
+            "UPDATE users SET userName = @newUserName WHERE userName = @userName");
+        cmd.Parameters.AddWithValue("userName", userName);
+        cmd.Parameters.AddWithValue("newUserName", new_userName);
+        await cmd.ExecuteNonQueryAsync();
+    }
+
     public async Task<bool> UserHasVisited(string userName, int restaurantId)
     {
         using var dataSource = NpgsqlDataSource.Create(connectionString);

@@ -9,6 +9,7 @@ public interface IDataStore
     Task CreateUser(string userName);
     Task<bool> UserExists(string userName);
     Task<bool> UserHasVisited(string userName, int restaurantId);
+    Task UpdateUser(string userName, string newUserName);
     Task AddVisit(string userName, int restaurantId);
     Task RemoveVisit(string userName, int restaurantId);
     Task<IReadOnlyCollection<Restaurant>> ReadVisitedRestaurants(string userName);
