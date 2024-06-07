@@ -1,9 +1,8 @@
 ﻿<ul class="navbar-nav">
     @if (User.Identity?.IsAuthenticated ?? false)
     {
-        <li class="nav-item"><div class="nav-link"> @User.Identity.Name </div></li>
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-page="/User">Log out</a>
+            <a class="nav-link text-dark" asp-area="" asp-page="/User">@User.Identity.Name</a>
         </li>
     }
     else
