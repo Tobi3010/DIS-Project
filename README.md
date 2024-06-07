@@ -55,4 +55,45 @@ info: Microsoft.Hosting.Lifetime[0]
       Content root path: <redacted>
 ```
 
-Notice that the `Now listening on` address may be different on your system.
+Notice that the `Now listening on` address may be different on your system. 
+
+Now that it is up and running, heres a quick userguide four our webapp :
+
+[ User page ]
+This is a good place to start. 
+
+-You can create a new user, or login to an already existing user (users
+are only usernames, no password). Then you can also log off.
+
+-If you want, you can change you username to something else. By typing a username 
+Into "New username", and click "Change".
+
+-Once you have marked some restaurants as "visited" on the restaurant page,
+You will be able to see those restaurants on this page.
+
+
+[ Home Page ]
+On the home page, you can see the top 50 restaurants from 2023.
+
+-If you wanna see the 50 best restaurants from other years, use the 
+"Enter Year between 2002 and 2023", which accepts the following inputs;
+    -Year     : years from 2002 to 2023, exept 2020
+    -List     : "year1,year2,year3"
+    -Interval : "year1-year2" where year2 => year1
+ 
+-If you only wanna see restaurants from a certain country, use the 
+"Select country" dropdown menu, pick a country and click "Filter".
+
+-Once a country is selected, you can now pick a city the same way
+you picked a country.
+
+-You can click on the blue link of each restaurant, to go to that 
+Restaurant's page.
+
+
+[ Restaurant Page ]
+On the restaurant page, you can see all the times that restaurant appeared
+In top 50 list. 
+
+-You can click on the "visited" checkbox, to mark that restaurant as 
+visited. Which can now be seen on your user page.
