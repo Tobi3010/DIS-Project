@@ -12,7 +12,7 @@ The database schema is defined in `.sql` files in the `Data` directory, but the 
 $ ./create-db.sh
 ```
 
-This script will prompt you (twice) to enter your password for your PostgreSQL installation.
+This script will prompt you (thrice) to enter your password for your PostgreSQL installation.
 
 If you want to delete the database again, you can use the script:
 
