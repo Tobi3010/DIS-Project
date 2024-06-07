@@ -11,6 +11,7 @@ public interface IDataStore
     Task<bool> UserHasVisited(string userName, int restaurantId);
     Task AddVisit(string userName, int restaurantId);
     Task RemoveVisit(string userName, int restaurantId);
+    Task<IReadOnlyCollection<Restaurant>> ReadVisitedRestaurants(string userName);
 
     //Queries for restaurants:
     Task<Restaurant?> ReadRestaurant(int id);

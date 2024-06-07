@@ -1,0 +1,42 @@
+﻿@page
+@model AuthNModel
+@{
+    ViewData["Title"] = @User.Identity?.Name ?? "Log in";
+}
+<h1>@ViewData["Title"]</h1>
+
+@if (User.Identity?.IsAuthenticated ?? false)
+{
+<form method="post">
+    <button type="submit" asp-page-handler="logout">Log out</button>
+</form>
+
+<h2>Restaurants visited</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>City</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var restaurant in Model.Restaurants)
+            {
+                <tr>
+                    <td><a asp-page="/Restaurant" asp-route-id="@restaurant.Id">@restaurant.Name</a></td>
+                    <td>@restaurant.City</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+<p>Type your user name to log in.</p>
+<p>Since this is just a demo site, it requires no password.</p>
+<p>The first time you supply a new user name, it will automatically be saved in the database. Thus, no explicit 'register user' process is required.</p>
+<form method="post">
+    <input type="text" name="userName" />
+    <button type="submit">Log in</button>
+</form>
+}
