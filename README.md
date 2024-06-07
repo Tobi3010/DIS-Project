@@ -57,43 +57,52 @@ info: Microsoft.Hosting.Lifetime[0]
 
 Notice that the `Now listening on` address may be different on your system. 
 
+
+## Userguide
+
 Now that it is up and running, heres a quick userguide for our webapp :
 
-[ User page ]
+### User page
 This is a good place to start. 
 
--You can create a new user, or login to an already existing user (users
+- You can create a new user, or login to an already existing user (users
 are only usernames, no password). Then you can also log off.
 
--If you want, you can change you username to something else. By typing a username 
-Into "New username", and click "Change".
+- If you want, you can change you username to something else. By typing a username 
+Into **New username**, and click **Change**.
 
--Once you have marked some restaurants as "visited" on the restaurant page,
-You will be able to see those restaurants on this page.
+- Once you have marked some restaurants as 
+  - [x] Visited 
+
+  on the restaurant page, you will be able to see those restaurants on this page.
 
 
-[ Home Page ]
+### Home page
 On the home page, you can see the top 50 restaurants from 2023.
 
--If you wanna see the 50 best restaurants from other years, use the 
-"Enter Year between 2002 and 2023", which accepts the following inputs;
-    -Year     : years from 2002 to 2023, exept 2020
-    -List     : "year1,year2,year3"
-    -Interval : "year1-year2" where year2 => year1
- 
--If you only wanna see restaurants from a certain country, use the 
-"Select country" dropdown menu, pick a country and click "Filter".
+- If you wanna see the 50 best restaurants from other years, use the 
+**Enter Year between 2002 and 2023**, which accepts the following inputs;
 
--Once a country is selected, you can now pick a city the same way
+    - Year     : years from 2002 to 2023, exept 2020
+    - List     : `year1,year2,year3`
+    - Interval : `year1-year2` where year2 => year1
+ 
+- If you only wanna see restaurants from a certain country, use the 
+**Select country** dropdown menu, pick a country and click **Filter**.
+
+- Once a country is selected, you can now pick a city the same way
 you picked a country.
 
--You can click on the blue link of each restaurant, to go to that 
+- You can click on the blue link of each restaurant, to go to that 
 Restaurant's page.
 
 
-[ Restaurant Page ]
+### Restaurant page
 On the restaurant page, you can see all the times that restaurant appeared
 In top 50 list. 
 
--You can click on the "visited" checkbox, to mark that restaurant as 
+- You can click on the 
+   - [ ] Visited 
+
+  checkbox, to mark that restaurant as 
 visited. Which can now be seen on your user page.
