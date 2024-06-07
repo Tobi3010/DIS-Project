@@ -60,13 +60,14 @@ public class IndexModel: PageModel
     public async Task<IActionResult> OnPostCountryButton(string country)
     {
         await Load();
-        Country = country;
-        Restaurants = await _dataStore.RestaurantsYearCountry(validate(Years), Country);
-        Cities = await _dataStore.CitiesYearCountry(validate(Years), Country);
-        //Make sure the selected country appears first in the menu
-        int idx = Countries.FindIndex(x => x.Name == Country); 
-        (Countries[idx], Countries[0]) = (Countries[0], Countries[idx]); //swap
-       
+        if (country != null) {
+            Country = country;
+            Restaurants = await _dataStore.RestaurantsYearCountry(validate(Years), Country);
+            Cities = await _dataStore.CitiesYearCountry(validate(Years), Country);
+            //Make sure the selected country appears first in the menu
+            int idx = Countries.FindIndex(x => x.Name == Country); 
+            (Countries[idx], Countries[0]) = (Countries[0], Countries[idx]); //swap
+        }
         return Page();
     }
 
