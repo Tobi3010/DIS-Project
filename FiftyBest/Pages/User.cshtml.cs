@@ -40,15 +40,18 @@ public class AuthNModel(IDataStore dataStore) : PageModel
     public async Task<IActionResult> OnPostChangeUsername(string userName, string new_userName)
     {
         var exists = await dataStore.UserExists(userName);
-        if (exists)
+        var exists_new = await dataStore.UserExists(new_userName);
+        var res_userName = userName;
+        if (exists && !exists_new)
         {
             await dataStore.UpdateUser(userName, new_userName);
+            res_userName = new_userName;
         }
 
         await HttpContext.SignInAsync(
             CookieAuthenticationDefaults.AuthenticationScheme,
             new ClaimsPrincipal(
-                new ClaimsIdentity([new Claim(ClaimTypes.Name, new_userName)],
+                new ClaimsIdentity([new Claim(ClaimTypes.Name, res_userName)],
                 CookieAuthenticationDefaults.AuthenticationScheme)));
 
         return RedirectToPage();
