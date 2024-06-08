@@ -11,6 +11,7 @@ CREATE TABLE Restaurants (
 );
 
 CREATE TABLE Visits (
+    score TEXT,
     userId INT REFERENCES Users(id) NOT NULL,
     restaurantId INT REFERENCES Restaurants(id) NOT NULL,
     PRIMARY KEY (userId, restaurantId)

@@ -79,6 +79,40 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         await cmd.ExecuteNonQueryAsync();
     }
 
+    public async Task AddScoreToVisit(string userName, int restaurantId, string score)
+    {
+        using var dataSource = NpgsqlDataSource.Create(connectionString);
+        using var cmd = dataSource.CreateCommand("""
+            UPDATE Visits
+            SET score = @score
+            WHERE userId = (SELECT id FROM Users WHERE userName = @userName)
+            AND restaurantId = @restaurantId
+            """);
+        cmd.Parameters.AddWithValue("userName", userName);
+        cmd.Parameters.AddWithValue("restaurantId", restaurantId);
+        cmd.Parameters.AddWithValue("score", score);
+        await cmd.ExecuteNonQueryAsync();
+    }
+
+    public async Task<Dictionary<int, string?>> ReadVisits(string userName)
+    {
+        using var dataSource = NpgsqlDataSource.Create(connectionString);
+        using var cmd = dataSource.CreateCommand("""
+            SELECT score, restaurantId FROM Visits
+            WHERE userId = (SELECT id FROM Users WHERE userName = @userName);
+            """);
+        cmd.Parameters.AddWithValue("userName", userName);
+
+        Dictionary<int, string?> RestaurantScores = new Dictionary<int,string?>();
+        using var reader = await cmd.ExecuteReaderAsync();
+        while (await reader.ReadAsync()) {
+            string? score = reader.IsDBNull(0) ? null : reader.GetString(0);
+            int id = (int)reader["restaurantId"];
+            RestaurantScores.Add(id, score);
+        }
+        return RestaurantScores;
+    }
+
     public async Task<IReadOnlyCollection<Restaurant>> ReadVisitedRestaurants(
         string userName)
     {
@@ -102,6 +136,8 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         }
         return restaurants;
     }
+
+
 
     //Queries for restaurants
     private static async Task<List<Ranking>> GetRestaurants(NpgsqlCommand cmd)

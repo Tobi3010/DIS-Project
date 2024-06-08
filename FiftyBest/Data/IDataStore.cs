@@ -12,6 +12,8 @@ public interface IDataStore
     Task UpdateUser(string userName, string newUserName);
     Task AddVisit(string userName, int restaurantId);
     Task RemoveVisit(string userName, int restaurantId);
+    Task AddScoreToVisit(string userName, int restaurantId, string score);
+    Task<Dictionary<int, string?>> ReadVisits(string userName);
     Task<IReadOnlyCollection<Restaurant>> ReadVisitedRestaurants(string userName);
 
     //Queries for restaurants:

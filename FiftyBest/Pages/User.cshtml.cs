@@ -10,6 +10,7 @@ namespace Setoma.CompSci.Dis.FiftyBest.Pages;
 public class AuthNModel(IDataStore dataStore) : PageModel
 {
     public IReadOnlyCollection<Restaurant> Restaurants { get; set; } = [];
+    public Dictionary<int, string?> RestaurantScores { get; set; } = new Dictionary<int, string?>();
 
     public async Task OnGet()
     {
@@ -18,6 +19,7 @@ public class AuthNModel(IDataStore dataStore) : PageModel
 
         var userName = User.Identity.Name;
         Restaurants = await dataStore.ReadVisitedRestaurants(userName);
+        RestaurantScores = await dataStore.ReadVisits(userName);
     }
 
     public async Task<IActionResult> OnPost(string userName)
