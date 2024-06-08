@@ -74,7 +74,8 @@ Into **New username**, and click **Change**.
 - Once you have marked some restaurants as 
   - [x] Visited 
 
-  on the restaurant page, you will be able to see those restaurants on this page.
+  on the restaurant page, you will be able to see those restaurants on this page,
+  And the score you gave.
 
 
 ### Home page
@@ -106,3 +107,7 @@ In top 50 list.
 
   checkbox, to mark that restaurant as 
 visited. Which can now be seen on your user page.
+
+- Once a restaurant is marked as visited, you can also give it a score.
+Scores range from 0 to 5, with increments of 0.5. The score can be seen on
+Your userpage.
