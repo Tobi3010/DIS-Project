@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Setoma.CompSci.Dis.FiftyBest.Data;
 using Setoma.CompSci.Dis.FiftyBest.Models;
 using System.ComponentModel;
+using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace Setoma.CompSci.Dis.FiftyBest.Pages;
 
@@ -19,6 +21,7 @@ public class RestaurantModel(IDataStore dataStore) : PageModel
 
     [BindProperty(SupportsGet = true)]
     public int Id { get; set; }
+    public string? Error { get; set; } = null;
     
     public async Task OnGet()
     {
@@ -40,6 +43,18 @@ public class RestaurantModel(IDataStore dataStore) : PageModel
         else
             await dataStore.RemoveVisit(User.Identity.Name, Id);
 
+        return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostScore(string score)
+    {
+         if (User.Identity?.Name is null)
+            return RedirectToPage();
+            
+        Regex pattern = new Regex("^[0-5]((?<!5).5)?$");
+        if (pattern.IsMatch(score)) {
+            await dataStore.AddScoreToVisit(User.Identity.Name, Id, score);
+        } 
         return RedirectToPage();
     }
 }

@@ -26,6 +26,7 @@
             <tr>
                 <th>Name</th>
                 <th>City</th>
+                <th>Your Score</th>
             </tr>
         </thead>
         <tbody>
@@ -34,6 +35,7 @@
                 <tr>
                     <td><a asp-page="/Restaurant" asp-route-id="@restaurant.Id">@restaurant.Name</a></td>
                     <td>@restaurant.City</td>
+                    <td>@Model.RestaurantScores[restaurant.Id]</td>
                 </tr>
             }
         </tbody>

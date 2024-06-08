@@ -15,6 +15,20 @@
     }
 </div>
 
+ @if (Model.HasVisited) 
+ {
+   
+    <div class="text-center">
+    <form class="form" method="post">
+        <label for="score">Give a Score</label>
+        <input type="text" id="score" name="score" required />
+        <input type="submit" value="Submit" asp-page-handler="Score" />
+    </form>
+    <p> Scores from 0 to 5, with increments of 0.5</p>
+    </div>
+ }
+
+
 <table class="table">
     <thead>
         <tr>
