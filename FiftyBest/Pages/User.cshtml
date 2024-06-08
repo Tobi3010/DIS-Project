@@ -1,5 +1,6 @@
 ﻿@page
 @model AuthNModel
+@using Setoma.CompSci.Dis.FiftyBest.Models
 @{
     ViewData["Title"] = @User.Identity?.Name ?? "Log in";
 }
@@ -36,6 +37,23 @@
                     <td><a asp-page="/Restaurant" asp-route-id="@restaurant.Id">@restaurant.Name</a></td>
                     <td>@restaurant.City</td>
                     <td>@Model.RestaurantScores[restaurant.Id]</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+<hr>
+<h2>Other users</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Users</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (User user in Model.Users)
+            {
+                <tr>
+                    <td>@user.Username</td>
                 </tr>
             }
         </tbody>
