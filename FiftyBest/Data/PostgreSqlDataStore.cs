@@ -35,6 +35,25 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         await cmd.ExecuteNonQueryAsync();
     }
 
+
+    public async Task<IReadOnlyCollection<User>> ReadUsers(string requestingUser)
+    {
+        var users = new List<User>();
+        using var dataSource = NpgsqlDataSource.Create(connectionString);
+        using var cmd = dataSource.CreateCommand();
+        cmd.CommandText = 
+            "SELECT id, userName FROM Users WHERE userName != @requestingUser";
+        cmd.Parameters.AddWithValue("requestingUser", requestingUser);
+        using var reader = await cmd.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            int id = (int)reader["id"];
+            string userName = (string)reader["userName"];
+            users.Add(new User(id, userName));
+        }
+        return users;
+    }
+
     public async Task<bool> UserHasVisited(string userName, int restaurantId)
     {
         using var dataSource = NpgsqlDataSource.Create(connectionString);
@@ -136,8 +155,6 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
         }
         return restaurants;
     }
-
-
 
     //Queries for restaurants
     private static async Task<List<Ranking>> GetRestaurants(NpgsqlCommand cmd)
