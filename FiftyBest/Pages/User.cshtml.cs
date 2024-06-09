@@ -21,7 +21,7 @@ public class AuthNModel(IDataStore dataStore) : PageModel
         var userName = User.Identity.Name;
         Restaurants = await dataStore.ReadVisitedRestaurants(userName);
         RestaurantScores = await dataStore.ReadVisits(userName);
-        Users = await dataStore.ReadUsers();
+        Users = await dataStore.ReadUsers(userName);
     }
 
     public async Task<IActionResult> OnPost(string userName)

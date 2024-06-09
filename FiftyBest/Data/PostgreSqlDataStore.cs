@@ -36,20 +36,22 @@ public sealed class PostgreSqlDataStore(string connectionString) : IDataStore
     }
 
 
-    public async Task<IReadOnlyCollection<User>> ReadUsers()
+    public async Task<IReadOnlyCollection<User>> ReadUsers(string userName)
     {
         var users = new List<User>();
         using var dataSource = NpgsqlDataSource.Create(connectionString);
         using var cmd = dataSource.CreateCommand();
         cmd.CommandText = 
-            "SELECT id, userName FROM USERS";
+            "SELECT id, userName FROM USERS "+
+            "WHERE NOT (userName = @userName)";
+        cmd.Parameters.AddWithValue("userName", userName);
 
         using var reader = await cmd.ExecuteReaderAsync();
         while (await reader.ReadAsync())
         {
             int id = (int)reader["id"];
-            string userName = (string)reader["userName"];
-            users.Add(new User(id, userName));
+            string name = (string)reader["userName"];
+            users.Add(new User(id, name));
         }
         return users;
     }
